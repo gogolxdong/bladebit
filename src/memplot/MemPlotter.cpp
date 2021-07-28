@@ -44,31 +44,31 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
         const size_t chachaBlockSize  = kF1BlockSizeBits / 8;
 
         const size_t t1XBuffer   = 16ull GB;
-        const size_t t2LRBuffer  = 32ull GB;
-        const size_t t3LRBuffer  = 32ull GB;
-        const size_t t4LRBuffer  = 32ull GB;
-        const size_t t5LRBuffer  = 32ull GB;
-        const size_t t6LRBuffer  = 32ull GB;
-        const size_t t7LRBuffer  = 32ull GB;
-        const size_t t7YBuffer   = 16ull GB;
+        // const size_t t2LRBuffer  = 32ull GB;
+        // const size_t t3LRBuffer  = 32ull GB;
+        // const size_t t4LRBuffer  = 32ull GB;
+        // const size_t t5LRBuffer  = 32ull GB;
+        // const size_t t6LRBuffer  = 32ull GB;
+        // const size_t t7LRBuffer  = 32ull GB;
+        // const size_t t7YBuffer   = 16ull GB;
 
         const size_t yBuffer0    = 32ull GB + chachaBlockSize;
-        const size_t yBuffer1    = 32ull GB + chachaBlockSize;
-        const size_t metaBuffer0 = 64ull GB;
+        // const size_t yBuffer1    = 32ull GB + chachaBlockSize;
+        // const size_t metaBuffer0 = 64ull GB;
         const size_t metaBuffer1 = 64ull GB;
 
         const size_t reqMem = 
             t1XBuffer   +
-            t2LRBuffer  +
-            t3LRBuffer  +
-            t4LRBuffer  +
-            t5LRBuffer  +
-            t6LRBuffer  +
-            t7LRBuffer  +
-            t7YBuffer   +
+            // t2LRBuffer  +
+            // t3LRBuffer  +
+            // t4LRBuffer  +
+            // t5LRBuffer  +
+            // t6LRBuffer  +
+            // t7LRBuffer  +
+            // t7YBuffer   +
             yBuffer0    +
-            yBuffer1    +
-            metaBuffer0 +
+            // yBuffer1    +
+            // metaBuffer0 +
             metaBuffer1;
 
         Log::Line( "Memory required: %lu GiB.", reqMem BtoGB );
@@ -78,18 +78,18 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
         Log::Line( "Allocating buffers." );
         _context.t1XBuffer   = SafeAlloc<uint32>( t1XBuffer  , warmStart, numa );
 
-        _context.t2LRBuffer  = SafeAlloc<Pair>  ( t2LRBuffer , warmStart, numa );
-        _context.t3LRBuffer  = SafeAlloc<Pair>  ( t3LRBuffer , warmStart, numa );
-        _context.t4LRBuffer  = SafeAlloc<Pair>  ( t4LRBuffer , warmStart, numa );
-        _context.t5LRBuffer  = SafeAlloc<Pair>  ( t5LRBuffer , warmStart, numa );
-        _context.t6LRBuffer  = SafeAlloc<Pair>  ( t6LRBuffer , warmStart, numa );
+        // _context.t2LRBuffer  = SafeAlloc<Pair>  ( t2LRBuffer , warmStart, numa );
+        // _context.t3LRBuffer  = SafeAlloc<Pair>  ( t3LRBuffer , warmStart, numa );
+        // _context.t4LRBuffer  = SafeAlloc<Pair>  ( t4LRBuffer , warmStart, numa );
+        // _context.t5LRBuffer  = SafeAlloc<Pair>  ( t5LRBuffer , warmStart, numa );
+        // _context.t6LRBuffer  = SafeAlloc<Pair>  ( t6LRBuffer , warmStart, numa );
 
-        _context.t7YBuffer   = SafeAlloc<uint32>( t7YBuffer  , warmStart, numa );
-        _context.t7LRBuffer  = SafeAlloc<Pair>  ( t7LRBuffer , warmStart, numa );
+        // _context.t7YBuffer   = SafeAlloc<uint32>( t7YBuffer  , warmStart, numa );
+        // _context.t7LRBuffer  = SafeAlloc<Pair>  ( t7LRBuffer , warmStart, numa );
 
         _context.yBuffer0    = SafeAlloc<uint64>( yBuffer0   , warmStart, numa );
-        _context.yBuffer1    = SafeAlloc<uint64>( yBuffer1   , warmStart, numa );
-        _context.metaBuffer0 = SafeAlloc<uint64>( metaBuffer0, warmStart, numa );
+        // _context.yBuffer1    = SafeAlloc<uint64>( yBuffer1   , warmStart, numa );
+        // _context.metaBuffer0 = SafeAlloc<uint64>( metaBuffer0, warmStart, numa );
         _context.metaBuffer1 = SafeAlloc<uint64>( metaBuffer1, warmStart, numa );
 
 
@@ -102,7 +102,7 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
 
         // Since we use a meta buffer (64GiB) for pairing,
         // we can just use all its space to fit pairs.
-        const size_t maxPairs      = metaBuffer0 / sizeof( Pair );
+        const size_t maxPairs      = metaBuffer1 / sizeof( Pair );
 
         _context.maxPairs     = maxPairs;
         _context.maxKBCGroups = maxKbcGroups;
@@ -166,7 +166,7 @@ bool MemPlotter::Run( const PlotRequest& request )
         auto timeStart = TimerBegin();
         Log::Line( "Running Phase 2" );
 
-        phase2.Run();
+        // phase2.Run();
 
         double elapsed = TimerEnd( timeStart );
         Log::Line( "Finished Phase 2 in %.2lf seconds.", elapsed );
@@ -183,7 +183,7 @@ bool MemPlotter::Run( const PlotRequest& request )
         Log::Line( "Running Phase 3" );
 
         MemPhase3 phase3( cx );
-        phase3.Run();
+        // phase3.Run();
 
         double elapsed = TimerEnd( timeStart );
         Log::Line( "Finished Phase 3 in %.2lf seconds.", elapsed );
@@ -238,16 +238,16 @@ void MemPlotter::WaitPlotWriter()
         Log::Line( "" );
         Log::Line( "Plot %s finished writing to disk:", _context.plotWriter->FilePath().c_str() );
         const uint64* tablePointers = _context.plotWriter->GetTablePointers();
-        for( uint i = 0; i < 7; i++ )
+        for( uint i = 0; i < 1; i++ )
         {
             const uint64 ptr = Swap64( tablePointers[i] );
             Log::Line( "  Table %u pointer  : %16lu ( 0x%016lx )", i+1, ptr, ptr );
         }
 
-        for( uint i = 7; i < 10; i++ )
+        for( uint i = 1; i < 4; i++ )
         {
             const uint64 ptr = Swap64( tablePointers[i] );
-            Log::Line( "  C%u table pointer : %16lu ( 0x%016lx )", i+1-7, ptr, ptr);
+            Log::Line( "  C%u table pointer : %16lu ( 0x%016lx )", i+1-1, ptr, ptr);
         }
         Log::Line( "" );
     // }

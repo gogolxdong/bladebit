@@ -14,7 +14,7 @@
 MemPhase3::MemPhase3( MemPlotContext& context )
     : _context( context )
 {}
-
+/*
 //-----------------------------------------------------------
 void MemPhase3::Run()
 {
@@ -190,7 +190,7 @@ uint64 MemPhase3::ProcessTable( uint32* lEntries, uint64* lpBuffer, Pair* rTable
 
     return newLength;
 }
-
+*/
 //-----------------------------------------------------------
 template<bool PruneTable>
 void ProcessTableThread( LPJob* job )

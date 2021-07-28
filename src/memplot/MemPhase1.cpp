@@ -6,6 +6,7 @@
 #include "FxSort.h"
 #include "SysHost.h"
 #include <cmath>
+#include <iostream>
 
 #include "DbgHelper.h"
 
@@ -144,13 +145,17 @@ void MemPhase1::Run()
         for( uint i = 0; i < f7Count; i++ )
         {
             const uint64 f7Idx = proofRange[0] + i;
-            DumpTestProofs( _context, f7Idx );
+            // DumpTestProofs( _context, f7Idx );
             Log::Line( "" );
         }
     }
     #endif
 }
 
+template<class T>
+int get_array_length(T &arr) {
+    return sizeof(arr) / sizeof(arr[0]);
+}
 
 //-----------------------------------------------------------
 uint64 MemPhase1::GenerateF1()
@@ -171,10 +176,16 @@ uint64 MemPhase1::GenerateF1()
     const size_t CHACHA_BLOCK_SIZE  = kF1BlockSizeBits / 8;
     const uint   numThreads         = cx.threadCount;
 
+    std::cout << "numThreads:" << numThreads << std::endl;
+
     const uint64 totalEntries       = 1ull << k;
     const uint64 entriesPerBlock    = CHACHA_BLOCK_SIZE / sizeof( uint32 );
+
     const uint64 totalBlocks        = totalEntries / entriesPerBlock;
     const uint64 blocksPerThread    = totalBlocks / numThreads;
+
+    std::cout << "blocksPerThread:" << blocksPerThread << std::endl;
+
     const uint64 entriesPerThread   = blocksPerThread * entriesPerBlock;
 
     const uint64 trailingEntries    = totalEntries - ( entriesPerThread * numThreads );
@@ -265,23 +276,23 @@ void MemPhase1::ForwardPropagate( uint64 table1EntryCount )
 
     // F1's y values are stored in yBuffer0, this will server
     // as the first y read buffer. They may be flipped afterwards.
-    ReadWriteBuffer<uint64> yBuffer   ( cx.yBuffer0,    cx.yBuffer1    );
-    ReadWriteBuffer<uint64> metaBuffer( cx.metaBuffer0, cx.metaBuffer1 );
+    // ReadWriteBuffer<uint64> yBuffer   ( cx.yBuffer0,    cx.yBuffer1    );
+    // ReadWriteBuffer<uint64> metaBuffer( cx.metaBuffer0, cx.metaBuffer1 );
 
-    uint64 table2EntryCount = FpComputeTable<TableId::Table2>( table1EntryCount, yBuffer, metaBuffer );
-    uint64 table3EntryCount = FpComputeTable<TableId::Table3>( table2EntryCount, yBuffer, metaBuffer );
-    uint64 table4EntryCount = FpComputeTable<TableId::Table4>( table3EntryCount, yBuffer, metaBuffer );
-    uint64 table5EntryCount = FpComputeTable<TableId::Table5>( table4EntryCount, yBuffer, metaBuffer );
-    uint64 table6EntryCount = FpComputeTable<TableId::Table6>( table5EntryCount, yBuffer, metaBuffer );
-    uint64 table7EntryCount = FpComputeTable<TableId::Table7>( table6EntryCount, yBuffer, metaBuffer );
+    // uint64 table2EntryCount = FpComputeTable<TableId::Table2>( table1EntryCount, yBuffer, metaBuffer );
+    // uint64 table3EntryCount = FpComputeTable<TableId::Table3>( table2EntryCount, yBuffer, metaBuffer );
+    // uint64 table4EntryCount = FpComputeTable<TableId::Table4>( table3EntryCount, yBuffer, metaBuffer );
+    // uint64 table5EntryCount = FpComputeTable<TableId::Table5>( table4EntryCount, yBuffer, metaBuffer );
+    // uint64 table6EntryCount = FpComputeTable<TableId::Table6>( table5EntryCount, yBuffer, metaBuffer );
+    // uint64 table7EntryCount = FpComputeTable<TableId::Table7>( table6EntryCount, yBuffer, metaBuffer );
 
     cx.entryCount[0] = table1EntryCount;
-    cx.entryCount[1] = table2EntryCount;
-    cx.entryCount[2] = table3EntryCount;
-    cx.entryCount[3] = table4EntryCount;
-    cx.entryCount[4] = table5EntryCount;
-    cx.entryCount[5] = table6EntryCount;
-    cx.entryCount[6] = table7EntryCount;
+    // cx.entryCount[1] = table2EntryCount;
+    // cx.entryCount[2] = table3EntryCount;
+    // cx.entryCount[3] = table4EntryCount;
+    // cx.entryCount[4] = table5EntryCount;
+    // cx.entryCount[5] = table6EntryCount;
+    // cx.entryCount[6] = table7EntryCount;
 }
 
 //-----------------------------------------------------------
@@ -295,16 +306,17 @@ uint64 MemPhase1::FpComputeTable( uint64 entryCount,
     MemPlotContext& cx  = _context;
 
     Pair* pairBuffer;
-    if      constexpr ( tableId == TableId::Table2 ) pairBuffer = cx.t2LRBuffer;
-    else if constexpr ( tableId == TableId::Table3 ) pairBuffer = cx.t3LRBuffer;
-    else if constexpr ( tableId == TableId::Table4 ) pairBuffer = cx.t4LRBuffer;
-    else if constexpr ( tableId == TableId::Table5 ) pairBuffer = cx.t5LRBuffer;
-    else if constexpr ( tableId == TableId::Table6 ) pairBuffer = cx.t6LRBuffer;
-    else if constexpr ( tableId == TableId::Table7 ) pairBuffer = cx.t7LRBuffer;
+    // if      constexpr ( tableId == TableId::Table2 ) pairBuffer = cx.t2LRBuffer;
+    // else if constexpr ( tableId == TableId::Table3 ) pairBuffer = cx.t3LRBuffer;
+    // else if constexpr ( tableId == TableId::Table4 ) pairBuffer = cx.t4LRBuffer;
+    // else if constexpr ( tableId == TableId::Table5 ) pairBuffer = cx.t5LRBuffer;
+    // else if constexpr ( tableId == TableId::Table6 ) pairBuffer = cx.t6LRBuffer;
+    // else if constexpr ( tableId == TableId::Table7 ) pairBuffer = cx.t7LRBuffer;
 
     return FpComputeSingleTable<tableId>( entryCount, pairBuffer, yBuffer, metaBuffer );
 }
 
+/*
 //-----------------------------------------------------------
 template<TableId tableId>
 uint64 MemPhase1::FpComputeSingleTable(
@@ -448,7 +460,7 @@ uint64 MemPhase1::FpComputeSingleTable(
     Log::Line( "Finished forward propagating table %d in %.2lf seconds.", (int)tableId+1, tableElapsed );
 
     return pairCount;
-}
+}*/
 
 //-----------------------------------------------------------
 void F1JobThread( F1GenJob* job )
