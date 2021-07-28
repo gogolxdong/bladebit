@@ -161,33 +161,33 @@ bool MemPlotter::Run( const PlotRequest& request )
         Log::Line( "Finished Phase 1 in %.2lf seconds.", elapsed );
     }
 
-    {
-        MemPhase2 phase2( cx );
-        auto timeStart = TimerBegin();
-        Log::Line( "Running Phase 2" );
+    // {
+    //     MemPhase2 phase2( cx );
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Running Phase 2" );
 
-        // phase2.Run();
+    //     phase2.Run();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished Phase 2 in %.2lf seconds.", elapsed );
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished Phase 2 in %.2lf seconds.", elapsed );
+    // }
 
-    // Start writing the plot file
-    if( !_context.plotWriter )
-        _context.plotWriter = new DiskPlotWriter();
+    // // Start writing the plot file
+    // if( !_context.plotWriter )
+    //     _context.plotWriter = new DiskPlotWriter();
     
-    cx.plotWriter->BeginPlot( request.outPath, *plotfile, request.plotId, request.memo, request.memoSize );
+    // cx.plotWriter->BeginPlot( request.outPath, *plotfile, request.plotId, request.memo, request.memoSize );
 
-    {
-        auto timeStart = TimerBegin();
-        Log::Line( "Running Phase 3" );
+    // {
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Running Phase 3" );
 
-        MemPhase3 phase3( cx );
-        // phase3.Run();
+    //     MemPhase3 phase3( cx );
+    //     phase3.Run();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished Phase 3 in %.2lf seconds.", elapsed );
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished Phase 3 in %.2lf seconds.", elapsed );
+    // }
 
     {
         auto timeStart = TimerBegin();
