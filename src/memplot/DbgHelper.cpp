@@ -2,17 +2,22 @@
 #include "b3/blake3.h"
 
 //-----------------------------------------------------------
+<<<<<<< HEAD
 uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
+=======
+/*
+void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
+>>>>>>> 3e98dbdf3cd7f412fee97c0fcf5941f8243b1aeb
 {
     uint32 proof[64];
 
     const Pair* tables[6] = {
-        cx.t7LRBuffer,
-        cx.t6LRBuffer,
-        cx.t5LRBuffer,
-        cx.t4LRBuffer,
-        cx.t3LRBuffer,
-        cx.t2LRBuffer
+        // cx.t7LRBuffer,
+        // cx.t6LRBuffer,
+        // cx.t5LRBuffer,
+        // cx.t4LRBuffer,
+        // cx.t3LRBuffer,
+        // cx.t2LRBuffer
     };
 
     const uint32* t1xTable = cx.t1XBuffer;
@@ -69,20 +74,24 @@ uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
         
         Log::Line( "[%-2d] : %-10lu : 0x%08lx", i, x, x );
     }
+<<<<<<< HEAD
     return proof;
 }
+=======
+}*/
+>>>>>>> 3e98dbdf3cd7f412fee97c0fcf5941f8243b1aeb
 
 //-----------------------------------------------------------
 void WritePhaseTableFiles( MemPlotContext& cx )
 {
     DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE1_FNAME  , cx.entryCount[0], cx.t1XBuffer  );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE2_FNAME  , cx.entryCount[1], cx.t2LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE3_FNAME  , cx.entryCount[2], cx.t3LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE4_FNAME  , cx.entryCount[3], cx.t4LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE5_FNAME  , cx.entryCount[4], cx.t5LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE6_FNAME  , cx.entryCount[5], cx.t6LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE7_FNAME  , cx.entryCount[6], cx.t7LRBuffer );
-    DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE7_Y_FNAME, cx.entryCount[6], cx.t7YBuffer  );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE2_FNAME  , cx.entryCount[1], cx.t2LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE3_FNAME  , cx.entryCount[2], cx.t3LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE4_FNAME  , cx.entryCount[3], cx.t4LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE5_FNAME  , cx.entryCount[4], cx.t5LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE6_FNAME  , cx.entryCount[5], cx.t6LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE7_FNAME  , cx.entryCount[6], cx.t7LRBuffer );
+    // DbgWriteTableToFile( *cx.threadPool, DBG_P1_TABLE7_Y_FNAME, cx.entryCount[6], cx.t7YBuffer  );
 }
 
 //-----------------------------------------------------------

@@ -71,12 +71,12 @@ void MemPhase2::Run()
     // Now mark the rest of the tables
     const Pair* rTables[7] = {
         nullptr,
-        cx.t2LRBuffer,
-        cx.t3LRBuffer,
-        cx.t4LRBuffer,
-        cx.t5LRBuffer,
-        cx.t6LRBuffer,
-        cx.t7LRBuffer
+        // cx.t2LRBuffer,
+        // cx.t3LRBuffer,
+        // cx.t4LRBuffer,
+        // cx.t5LRBuffer,
+        // cx.t6LRBuffer,
+        // cx.t7LRBuffer
     };
 
     // #NOTE: We don't need to prune table 1. 

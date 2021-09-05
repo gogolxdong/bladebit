@@ -44,17 +44,17 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
         const size_t chachaBlockSize  = kF1BlockSizeBits / 8;
 
         const size_t t1XBuffer   = 16ull GB;
-        const size_t t2LRBuffer  = 32ull GB;
-        const size_t t3LRBuffer  = 32ull GB;
-        const size_t t4LRBuffer  = 32ull GB;
-        const size_t t5LRBuffer  = 32ull GB;
-        const size_t t6LRBuffer  = 32ull GB;
-        const size_t t7LRBuffer  = 32ull GB;
-        const size_t t7YBuffer   = 16ull GB;
+        // const size_t t2LRBuffer  = 32ull GB;
+        // const size_t t3LRBuffer  = 32ull GB;
+        // const size_t t4LRBuffer  = 32ull GB;
+        // const size_t t5LRBuffer  = 32ull GB;
+        // const size_t t6LRBuffer  = 32ull GB;
+        // const size_t t7LRBuffer  = 32ull GB;
+        // const size_t t7YBuffer   = 16ull GB;
 
         const size_t yBuffer0    = 32ull GB + chachaBlockSize;
-        const size_t yBuffer1    = 32ull GB + chachaBlockSize;
-        const size_t metaBuffer0 = 64ull GB;
+        // const size_t yBuffer1    = 32ull GB + chachaBlockSize;
+        // const size_t metaBuffer0 = 64ull GB;
         const size_t metaBuffer1 = 64ull GB;
 
         const size_t reqMem = 
@@ -102,7 +102,7 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
 
         // Since we use a meta buffer (64GiB) for pairing,
         // we can just use all its space to fit pairs.
-        const size_t maxPairs      = metaBuffer0 / sizeof( Pair );
+        const size_t maxPairs      = metaBuffer1 / sizeof( Pair );
 
         _context.maxPairs     = maxPairs;
         _context.maxKBCGroups = maxKbcGroups;
@@ -259,16 +259,16 @@ void MemPlotter::WaitPlotWriter()
 
         // Print final pointer offsets
         const uint64* tablePointers = _context.plotWriter->GetTablePointers();
-        for( uint i = 0; i < 7; i++ )
+        for( uint i = 0; i < 1; i++ )
         {
             const uint64 ptr = Swap64( tablePointers[i] );
             Log::Line( "  Table %u pointer  : %16lu ( 0x%016lx )", i+1, ptr, ptr );
         }
 
-        for( uint i = 7; i < 10; i++ )
+        for( uint i = 1; i < 4; i++ )
         {
             const uint64 ptr = Swap64( tablePointers[i] );
-            Log::Line( "  C%u table pointer : %16lu ( 0x%016lx )", i+1-7, ptr, ptr);
+            Log::Line( "  C%u table pointer : %16lu ( 0x%016lx )", i+1-1, ptr, ptr);
         }
         Log::Line( "" );
     // }

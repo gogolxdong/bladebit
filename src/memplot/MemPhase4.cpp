@@ -1,6 +1,9 @@
 #include "MemPhase4.h"
 #include "CTables.h"
 #include "util/Log.h"
+#include <iostream>
+
+
 
 //-----------------------------------------------------------
 MemPhase4::MemPhase4( MemPlotContext& context )
@@ -15,7 +18,7 @@ void MemPhase4::Run()
     
     // The first 32 GiB of meta0 are used by phase 3 to write the table 6 park,
     // so we need to offset here to write the rest.
-    cx.p4WriteBuffer = ((byte*)cx.metaBuffer0) + 32ull GB;
+    cx.p4WriteBuffer = ((byte*)cx.metaBuffer1) + 32ull GB;
     cx.p4WriteBufferWriter = cx.p4WriteBuffer;
 
     WriteP7();
@@ -40,6 +43,8 @@ void MemPhase4::WriteP7()
     auto timer = TimerBegin();
 
     const size_t sizeWritten = WriteP7Parallel<MAX_THREADS>( *cx.threadPool, entryCount, lTable, p7Buffer );
+    std::cout << "sizeWritten:" << sizeWritten << std::endl;
+
     
     cx.p4WriteBufferWriter = ((byte*)p7Buffer) + sizeWritten;
     
@@ -62,7 +67,7 @@ void MemPhase4::WriteC1()
     auto timer = TimerBegin();
 
     const size_t sizeWritten = WriteC12Parallel<MAX_THREADS, kCheckpoint1Interval>( 
-        *cx.threadPool, entryCount, cx.t7YBuffer, writeBuffer );
+        *cx.threadPool, entryCount, (uint32*)cx.yBuffer0, writeBuffer );
 
     cx.p4WriteBufferWriter = ((byte*)writeBuffer) + sizeWritten;
 
@@ -84,8 +89,9 @@ void MemPhase4::WriteC2()
     Log::Line( "  Writing C2 table." );
     auto timer = TimerBegin();
 
+
     const size_t sizeWritten = WriteC12Parallel<MAX_THREADS, kCheckpoint1Interval*kCheckpoint2Interval>( 
-        *cx.threadPool, entryCount, cx.t7YBuffer, writeBuffer );
+        *cx.threadPool, entryCount, (uint32*)cx.yBuffer0, writeBuffer );
 
     cx.p4WriteBufferWriter = ((byte*)writeBuffer) + sizeWritten;
 
@@ -108,7 +114,7 @@ void MemPhase4::WriteC3()
     auto timer = TimerBegin();
 
     const size_t sizeWritten = WriteC3Parallel<MAX_THREADS>( 
-         *cx.threadPool, entryCount, cx.t7YBuffer, writeBuffer );
+         *cx.threadPool, entryCount, (uint32*)cx.yBuffer0, writeBuffer );
 
     cx.p4WriteBufferWriter = ((byte*)writeBuffer) + sizeWritten;
 

@@ -88,8 +88,8 @@ private:
     size_t      _headerSize        = 0;
     byte*       _headerBuffer      = nullptr;
     size_t      _position          = 0;             // Current write position
-    uint64      _tablePointers[10] = { 0 };         // Pointers to the table begin position
-    TableBuffer _tablebuffers [10];                 // Table buffers passed to us for writing.
+    uint64      _tablePointers[4] = { 0 };         // Pointers to the table begin position
+    TableBuffer _tablebuffers [4];                 // Table buffers passed to us for writing.
 
     std::atomic<uint> _tableIndex             = 0;  // Next table index to write
     std::atomic<uint> _lastTableIndexWritten  = 10; // Index of the latest table that was fully written to disk. (Owned by writer thread.)

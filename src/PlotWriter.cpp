@@ -347,9 +347,9 @@ void DiskPlotWriter::WriterThread()
             break;
         
         // Have we finished writing the last table?
-        if( tableIndex >= 10 )
+        if( tableIndex >= 4 )
         {
-            ASSERT( tableIndex == 10 );
+            ASSERT( tableIndex == 4 );
 
             // We now need to seek to the beginning so that we can write the header
             // with the table pointers set
@@ -358,7 +358,7 @@ void DiskPlotWriter::WriterThread()
                 const size_t alignedHeaderSize = _tablePointers[0];
 
                 // Convert to BE
-                for( uint i = 0; i < 10; i++ )
+                for( uint i = 0; i < 4; i++ )
                     _tablePointers[i] = Swap64( _tablePointers[i] );
 
                 memcpy( _headerBuffer + (_headerSize-80), _tablePointers, 80 );
