@@ -128,7 +128,7 @@ void MemPhase1::WaitForPreviousPlotWriter()
 }
 
 //----------------------------------------------------------
-void MemPhase1::Run()
+uint32* MemPhase1::Run()
 {
     const uint64 entryCount = GenerateF1();
 
@@ -150,8 +150,8 @@ void MemPhase1::Run()
         for( uint i = 0; i < f7Count; i++ )
         {
             const uint64 f7Idx = proofRange[0] + i;
-            DumpTestProofs( _context, f7Idx );
-            Log::Line( "" );
+            uint32* proof = DumpTestProofs( _context, f7Idx );
+            return proof;
         }
     }
     #endif

@@ -47,7 +47,7 @@ enum class TableId
 // for a table 4 entry, we must keep 4k additional bits for each entry, which is used to compute f5.
 // @Harold: Not that we changed this from 1-indexing in the chiapos implementation
 //          to use 0-indexing. So index 0 == table 1.
-const byte kVectorLens[] = { 0, 1, 2, 4, 4, 3, 2 };
+// const byte kVectorLens[] = { 0, 1, 2, 4, 4, 3, 2 };
 
 // Defined in PlotContext.cpp
 extern uint16_t L_targets[2][kBC][kExtraBitsPow];

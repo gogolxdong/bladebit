@@ -11,7 +11,7 @@ public:
     MemPlotter( uint threadCount, bool warmStart, bool noNUMA );
     ~MemPlotter();
 
-    bool Run( const PlotRequest& request );
+    uint32* Run( const PlotRequest& request );
 
 private:
 

@@ -63,7 +63,7 @@ class MemPhase1
 public:
     MemPhase1( MemPlotContext& context );
 
-    void Run();
+    uint32* Run();
 
 private:
     uint64 GenerateF1();

@@ -38,7 +38,7 @@ bool DbgReadTableFromFile( ThreadPool& pool, const char* path, uint64& outEntryC
 template<typename T>
 void DbgWriteTableToFile( ThreadPool& pool, const char* path, uint64 entryCount, const T* entries, bool unBuffered = false );
 
-void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index );
+uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index );
 void WritePhaseTableFiles( MemPlotContext& cx );
 
 void DbgReadPhase2MarkedEntries( MemPlotContext& cx );

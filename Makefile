@@ -40,7 +40,7 @@ endif
 LDFLAGS := -pthread \
 	-Llib \
 	-lbls \
-	-lnuma
+	-lnuma 
 
 
 # Is it release or debug?
@@ -79,7 +79,11 @@ CXXFLAGS    := 	\
 # GCC or Clang?
 ifneq (,$(findstring gcc,$(CC)))
 	CFLAGS += \
-		-fmax-errors=5
+		-fmax-errors=5 \
+		-D_DEBUG \
+		-DDBG_DUMP_PROOFS \
+		-Wno-unused-but-set-variable\
+		-Wno-unused-variable
 endif
 
 ifneq (,$(findstring clang,$(CC)))
@@ -106,7 +110,7 @@ endif
 # --------------------------------------------------------
 # Private Config
 # --------------------------------------------------------
-SOURCES 	:=
+SOURCES 	:= 
 SRC_ROOT	:= src
 OPT_FLAGS	:=
 

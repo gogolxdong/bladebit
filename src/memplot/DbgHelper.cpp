@@ -2,7 +2,7 @@
 #include "b3/blake3.h"
 
 //-----------------------------------------------------------
-void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
+uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
 {
     uint32 proof[64];
 
@@ -58,7 +58,6 @@ void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
     for( uint i = 0, p = 0; i < 32; i++ )
     {
         const Pair* pair = lPairs[i];
-
         proof[p++] = t1xTable[pair->left ];
         proof[p++] = t1xTable[pair->right];
     }
@@ -70,6 +69,7 @@ void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
         
         Log::Line( "[%-2d] : %-10lu : 0x%08lx", i, x, x );
     }
+    return proof;
 }
 
 //-----------------------------------------------------------

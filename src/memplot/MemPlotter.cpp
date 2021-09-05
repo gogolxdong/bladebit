@@ -59,16 +59,16 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
 
         const size_t reqMem = 
             t1XBuffer   +
-            t2LRBuffer  +
-            t3LRBuffer  +
-            t4LRBuffer  +
-            t5LRBuffer  +
-            t6LRBuffer  +
-            t7LRBuffer  +
-            t7YBuffer   +
+            // t2LRBuffer  +
+            // t3LRBuffer  +
+            // t4LRBuffer  +
+            // t5LRBuffer  +
+            // t6LRBuffer  +
+            // t7LRBuffer  +
+            // t7YBuffer   +
             yBuffer0    +
-            yBuffer1    +
-            metaBuffer0 +
+            // yBuffer1    +
+            // metaBuffer0 +
             metaBuffer1;
 
         Log::Line( "Memory required: %lu GiB.", reqMem BtoGB );
@@ -78,18 +78,18 @@ MemPlotter::MemPlotter( uint threadCount, bool warmStart, bool noNUMA )
         Log::Line( "Allocating buffers." );
         _context.t1XBuffer   = SafeAlloc<uint32>( t1XBuffer  , warmStart, numa );
 
-        _context.t2LRBuffer  = SafeAlloc<Pair>  ( t2LRBuffer , warmStart, numa );
-        _context.t3LRBuffer  = SafeAlloc<Pair>  ( t3LRBuffer , warmStart, numa );
-        _context.t4LRBuffer  = SafeAlloc<Pair>  ( t4LRBuffer , warmStart, numa );
-        _context.t5LRBuffer  = SafeAlloc<Pair>  ( t5LRBuffer , warmStart, numa );
-        _context.t6LRBuffer  = SafeAlloc<Pair>  ( t6LRBuffer , warmStart, numa );
+        // _context.t2LRBuffer  = SafeAlloc<Pair>  ( t2LRBuffer , warmStart, numa );
+        // _context.t3LRBuffer  = SafeAlloc<Pair>  ( t3LRBuffer , warmStart, numa );
+        // _context.t4LRBuffer  = SafeAlloc<Pair>  ( t4LRBuffer , warmStart, numa );
+        // _context.t5LRBuffer  = SafeAlloc<Pair>  ( t5LRBuffer , warmStart, numa );
+        // _context.t6LRBuffer  = SafeAlloc<Pair>  ( t6LRBuffer , warmStart, numa );
 
-        _context.t7YBuffer   = SafeAlloc<uint32>( t7YBuffer  , warmStart, numa );
-        _context.t7LRBuffer  = SafeAlloc<Pair>  ( t7LRBuffer , warmStart, numa );
+        // _context.t7YBuffer   = SafeAlloc<uint32>( t7YBuffer  , warmStart, numa );
+        // _context.t7LRBuffer  = SafeAlloc<Pair>  ( t7LRBuffer , warmStart, numa );
 
         _context.yBuffer0    = SafeAlloc<uint64>( yBuffer0   , warmStart, numa );
-        _context.yBuffer1    = SafeAlloc<uint64>( yBuffer1   , warmStart, numa );
-        _context.metaBuffer0 = SafeAlloc<uint64>( metaBuffer0, warmStart, numa );
+        // _context.yBuffer1    = SafeAlloc<uint64>( yBuffer1   , warmStart, numa );
+        // _context.metaBuffer0 = SafeAlloc<uint64>( metaBuffer0, warmStart, numa );
         _context.metaBuffer1 = SafeAlloc<uint64>( metaBuffer1, warmStart, numa );
 
 
@@ -114,7 +114,7 @@ MemPlotter::~MemPlotter()
 {}
 
 //----------------------------------------------------------
-bool MemPlotter::Run( const PlotRequest& request )
+uint32* MemPlotter::Run( const PlotRequest& request )
 {
     auto& cx = _context;
 
@@ -125,24 +125,24 @@ bool MemPlotter::Run( const PlotRequest& request )
     
     // Open the plot file for writing before we actually start plotting
     const int PLOT_FILE_RETRIES = 16;
-    FileStream* plotfile = new FileStream();
-    ASSERT( plotfile );
+    // FileStream* plotfile = new FileStream();
+    // ASSERT( plotfile );
 
-    for( int i = 0;; )
-    {
-        if( !plotfile->Open( request.outPath, FileMode::Create, FileAccess::Write, FileFlags::NoBuffering | FileFlags::LargeFile ) )
-        {
-            if( ++i > PLOT_FILE_RETRIES )
-            {
-                Log::Error( "Error: Failed to open plot output file at %s for writing after %d tries.", request.outPath, PLOT_FILE_RETRIES );
-                delete plotfile;
-                return false;
-            }
-        }
+    // for( int i = 0;; )
+    // {
+    //     if( !plotfile->Open( request.outPath, FileMode::Create, FileAccess::Write, FileFlags::NoBuffering | FileFlags::LargeFile ) )
+    //     {
+    //         if( ++i > PLOT_FILE_RETRIES )
+    //         {
+    //             Log::Error( "Error: Failed to open plot output file at %s for writing after %d tries.", request.outPath, PLOT_FILE_RETRIES );
+    //             delete plotfile;
+    //             return false;
+    //         }
+    //     }
 
-        ASSERT( plotfile->IsOpen() );
-        break;
-    }
+    //     ASSERT( plotfile->IsOpen() );
+    //     break;
+    // }
     
     // Start plotting
     auto plotTimer = TimerBegin();
@@ -155,70 +155,71 @@ bool MemPlotter::Run( const PlotRequest& request )
         Log::Line( "Running Phase 1" );
 
         MemPhase1 phase1( cx );
-        phase1.Run();
+        uint32* proof = phase1.Run();
 
         double elapsed = TimerEnd( timeStart );
         Log::Line( "Finished Phase 1 in %.2lf seconds.", elapsed );
+        return proof;
     }
 
-    {
-        MemPhase2 phase2( cx );
-        auto timeStart = TimerBegin();
-        Log::Line( "Running Phase 2" );
+    // {
+    //     MemPhase2 phase2( cx );
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Running Phase 2" );
 
-        phase2.Run();
+    //     phase2.Run();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished Phase 2 in %.2lf seconds.", elapsed );
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished Phase 2 in %.2lf seconds.", elapsed );
+    // }
 
-    // Start writing the plot file
-    if( !_context.plotWriter )
-        _context.plotWriter = new DiskPlotWriter();
+    // // Start writing the plot file
+    // if( !_context.plotWriter )
+    //     _context.plotWriter = new DiskPlotWriter();
     
-    cx.plotWriter->BeginPlot( request.outPath, *plotfile, request.plotId, request.memo, request.memoSize );
+    // cx.plotWriter->BeginPlot( request.outPath, *plotfile, request.plotId, request.memo, request.memoSize );
 
-    {
-        auto timeStart = TimerBegin();
-        Log::Line( "Running Phase 3" );
+    // {
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Running Phase 3" );
 
-        MemPhase3 phase3( cx );
-        phase3.Run();
+    //     MemPhase3 phase3( cx );
+    //     phase3.Run();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished Phase 3 in %.2lf seconds.", elapsed );
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished Phase 3 in %.2lf seconds.", elapsed );
+    // }
 
-    {
-        auto timeStart = TimerBegin();
-        Log::Line( "Running Phase 4" );
+    // {
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Running Phase 4" );
 
-        MemPhase4 phase4( cx );
-        phase4.Run();
+    //     MemPhase4 phase4( cx );
+    //     phase4.Run();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished Phase 4 in %.2lf seconds.", elapsed );
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished Phase 4 in %.2lf seconds.", elapsed );
+    // }
 
-    // Wait flush writer, if this is the final plot
-    if( request.IsFinalPlot )
-    {
-        auto timeStart = TimerBegin();
-        Log::Line( "Writing final plot tables to disk" );
+    // // Wait flush writer, if this is the final plot
+    // if( request.IsFinalPlot )
+    // {
+    //     auto timeStart = TimerBegin();
+    //     Log::Line( "Writing final plot tables to disk" );
 
-        WaitPlotWriter();
+    //     WaitPlotWriter();
 
-        double elapsed = TimerEnd( timeStart );
-        Log::Line( "Finished writing tables to disk in %.2lf seconds.", elapsed );
-        Log::Flush();
-    }
+    //     double elapsed = TimerEnd( timeStart );
+    //     Log::Line( "Finished writing tables to disk in %.2lf seconds.", elapsed );
+    //     Log::Flush();
+    // }
 
     double plotElapsed = TimerEnd( plotTimer );
     Log::Line( "Finished plotting in %.2lf seconds (%.2lf minutes).", 
         plotElapsed, plotElapsed / 60.0 );
 
     cx.plotCount ++;
-    return true;
+    return NULL;
 }
 
 //-----------------------------------------------------------
