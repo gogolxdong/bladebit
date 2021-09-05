@@ -44,13 +44,13 @@ struct MemPlotContext
     ///
     // Permanent table data buffers
     uint32* t1XBuffer ;       // 16 GiB
-    // Pair*   t2LRBuffer;       // 32 GiB
-    // Pair*   t3LRBuffer;       // 32 GiB
-    // Pair*   t4LRBuffer;       // 32 GiB
-    // Pair*   t5LRBuffer;       // 32 GiB
-    // Pair*   t6LRBuffer;       // 32 GiB
-    // Pair*   t7LRBuffer;       // 32 GiB
-    // uint32* t7YBuffer ;       // 16 GiB
+    Pair*   t2LRBuffer;       // 32 GiB
+    Pair*   t3LRBuffer;       // 32 GiB
+    Pair*   t4LRBuffer;       // 32 GiB
+    Pair*   t5LRBuffer;       // 32 GiB
+    Pair*   t6LRBuffer;       // 32 GiB
+    Pair*   t7LRBuffer;       // 32 GiB
+    uint32* t7YBuffer ;       // 16 GiB
 
     // Temporary read/write y buffers
     uint64* yBuffer0;         // 32GiB each

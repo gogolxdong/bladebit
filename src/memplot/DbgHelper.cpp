@@ -1,65 +1,86 @@
 #include "DbgHelper.h"
 #include "b3/blake3.h"
 
+uint32 *randomUint32()
+{
+    uint32 a[1] = {rand() % (1<<32 - 0 + 1) + 0};
+    return a;
+}
+
+
+uint8 *randomUint8()
+{
+    uint8 a[1] = {rand() % (1<<8 - 0 + 1) + 0};
+    return a;
+}
 //-----------------------------------------------------------
 uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
 {
     uint32 proof[64];
 
     const Pair* tables[6] = {
-        // cx.t7LRBuffer,
-        // cx.t6LRBuffer,
-        // cx.t5LRBuffer,
-        // cx.t4LRBuffer,
-        // cx.t3LRBuffer,
-        // cx.t2LRBuffer
+        cx.t7LRBuffer,
+        cx.t6LRBuffer,
+        cx.t5LRBuffer,
+        cx.t4LRBuffer,
+        cx.t3LRBuffer,
+        cx.t2LRBuffer
     };
+    Log::Line( "maxKBCGroups [%lu]:", cx.maxKBCGroups);
+    Log::Line( "maxPairs [%lu]:", cx.maxPairs);
 
     const uint32* t1xTable = cx.t1XBuffer;
 
-    const uint32 f7     = cx.t7YBuffer [f7Index];
-    const Pair&  f7Pair = cx.t7LRBuffer[f7Index];
+    const uint32 f7     = cx.yBuffer0 [f7Index];
+    // const Pair&  f7Pair = cx.metaBuffer1[f7Index];
 
     Log::Line( "T7 [%-2llu] f7  : %lu : 0x%08lx", f7Index, f7, f7 );
-    Log::Line( "T7 [%-2llu] L/R : %-8lu | %-8lu", f7Index, f7Pair.left, f7Pair.right );
+    // Log::Line( "T7 [%-2llu] L/R : %-8lu | %-8lu", f7Index, f7Pair.left, f7Pair.right );
 
-    const Pair* rPairs[16]; // R table pairs
+    const Pair* rPairs[32]; // R table pairs
     const Pair* lPairs[32]; // L table pairs
     memset( rPairs, 0, sizeof( rPairs ) );
     memset( lPairs, 0, sizeof( lPairs ) );
 
-    rPairs[0] = &f7Pair;
+    // rPairs[0] = &f7Pair;
 
     // Get all pairs up to the 2nd table
-    for( uint i = 1; i < 6; i++ )
-    {
-        const uint32 rCount = 1ul << (i-1);
-        const uint32 lCount = 1 << i;
+    // for( uint i = 1; i < 6; i++ )
+    // {
+    //     const uint32 rCount = 1ul << (i-1);
+    //     const uint32 lCount = 1 << i;
 
-        const Pair* table = tables[i];
-        Log::Line( "Table %d", 7-i );
+    //     const Pair* table = tables[i];
+    //     Log::Line( "Table %d", 7-i );
 
-        for( uint r = 0, l = 0; r < rCount; r++ )
-        {
-            const Pair* rPair = rPairs[r];
+    //     for( uint r = 0, l = 0; r < rCount; r++ )
+    //     {
+    //         const Pair* rPair = rPairs[r];
             
-            Log::Line( "T%d [%-2lu] L/R: %-10lu | %-10lu", 7-i, r, 
-                        rPair->left, rPair->right );
+    //         Log::Line( "T%d [%-2lu] L/R: %-10lu | %-10lu", 7-i, r, 
+    //                     rPair->left, rPair->right );
 
-            lPairs[l++] = &table[rPair->left ];
-            lPairs[l++] = &table[rPair->right];
-        }
+    //         lPairs[l++] = &table[rPair->left ];
+    //         lPairs[l++] = &table[rPair->right];
+    //     }
 
-        // Copy pairs to rTable
-        memcpy( rPairs, lPairs, sizeof( Pair* ) * lCount );
-    }
+    //     // Copy pairs to rTable
+    //     memcpy( rPairs, lPairs, sizeof( Pair* ) * lCount );
+    // }
 
     // Grab all x values pointed by the pairs
     for( uint i = 0, p = 0; i < 32; i++ )
     {
-        const Pair* pair = lPairs[i];
-        proof[p++] = t1xTable[pair->left ];
-        proof[p++] = t1xTable[pair->right];
+        // const Pair* pair = lPairs[i];
+        uint32 rand32 = *randomUint32();
+        uint8 rand8 = *randomUint8();
+        Log::Line( "rand32 [%d], rand8 : [%d]", rand32, rand8);
+
+        proof[p++] = t1xTable[rand32 ];
+        proof[p++] = t1xTable[rand32 + rand8];
+
+        // proof[p++] = t1xTable[pair->left ];
+        // proof[p++] = t1xTable[pair->right];
     }
 
     Log::Line( "Proof x's:" );
