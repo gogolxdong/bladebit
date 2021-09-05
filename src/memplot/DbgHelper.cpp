@@ -2,12 +2,7 @@
 #include "b3/blake3.h"
 
 //-----------------------------------------------------------
-<<<<<<< HEAD
 uint32* DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
-=======
-/*
-void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
->>>>>>> 3e98dbdf3cd7f412fee97c0fcf5941f8243b1aeb
 {
     uint32 proof[64];
 
@@ -74,12 +69,8 @@ void DumpTestProofs( const MemPlotContext& cx, const uint64 f7Index )
         
         Log::Line( "[%-2d] : %-10lu : 0x%08lx", i, x, x );
     }
-<<<<<<< HEAD
     return proof;
 }
-=======
-}*/
->>>>>>> 3e98dbdf3cd7f412fee97c0fcf5941f8243b1aeb
 
 //-----------------------------------------------------------
 void WritePhaseTableFiles( MemPlotContext& cx )

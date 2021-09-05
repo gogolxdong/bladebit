@@ -151,13 +151,8 @@ uint32* MemPhase1::Run()
         for( uint i = 0; i < f7Count; i++ )
         {
             const uint64 f7Idx = proofRange[0] + i;
-<<<<<<< HEAD
             uint32* proof = DumpTestProofs( _context, f7Idx );
             return proof;
-=======
-            // DumpTestProofs( _context, f7Idx );
-            Log::Line( "" );
->>>>>>> 3e98dbdf3cd7f412fee97c0fcf5941f8243b1aeb
         }
     }
     #endif
